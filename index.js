@@ -37,6 +37,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/uploads", express.static("uploads"));
 
+app.use("/",(req, res)=>{
+    res.status(200).json({message:"You are welcome!"});
+})
+
 // initialize routes
 app.use("/api", require("./routes/app.routes"));
 
