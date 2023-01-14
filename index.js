@@ -42,8 +42,6 @@ app.use("/api", require("./routes/app.routes"));
 
 app.use(errors.errorHandler);
 
-
-
 // listen for requests
 app.listen(process.env.port || 4000, function () {
   console.log("Ready to Go!");
