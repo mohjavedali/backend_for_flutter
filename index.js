@@ -33,6 +33,7 @@ mongoose
   );
 
 app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/uploads", express.static("uploads"));
 
@@ -41,7 +42,7 @@ app.use("/api", require("./routes/app.routes"));
 
 app.use(errors.errorHandler);
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // listen for requests
 app.listen(process.env.port || 4000, function () {
