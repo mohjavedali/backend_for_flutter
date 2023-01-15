@@ -27,6 +27,7 @@ exports.create = (req, res, next)=>{
 }
 
 exports.findAll= (req, res, next)=>{
+    console.log("sss",req);
     var model = {
         categoryName:req.query.categoryName,
         pageSize:req.query.pageSize,
