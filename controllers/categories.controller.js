@@ -2,15 +2,17 @@ const categoriesService = require("../services/categories.service");
 const upload = require("../middleware/category.upload");
 
 exports.create = (req, res, next)=>{
-    upload(req,res, function(err){
+    const url = req.protocol + "://" + req.get("host");
+    upload(req, res, function(err){
         if(err){
             next(err);
         }else{
-            const path = req.file != undefined ? req.file.path.replace(/\\/g,"/"):"";
+            const path = req.file != undefined ? req.file.path.replace(/\\/g, "/") : "";
             var model = {
                 categoryName:req.body.categoryName,
                 categoryDescription:req.body.categoryDescription,
-                categoryImage:path !="" ? "/"+path:"",
+                categoryPrice:req.body.categoryPrice,
+                categoryImage:path !="" ? url+"/"+path:"",
             }
             categoriesService.createCategory(model,(error, results)=>{
                 if(error){
@@ -63,6 +65,7 @@ exports.findOne = (req, res, next)=>{
 }
 
 exports.update = (req, res, next)=>{
+    const url = req.protocol + "://" + req.get("host");
     upload(req,res, function(err){
         if(err){
             next(err);
@@ -72,7 +75,8 @@ exports.update = (req, res, next)=>{
                 categoryId:req.params.id, 
                 categoryName:req.body.categoryName,
                 categoryDescription:req.body.categoryDescription,
-                categoryName:path!=""?"/"+path:"",
+                categoryPrice:req.body.categoryPrice,
+                categoryImage:path!=""? url+"/"+path:"",
             }
             categoriesService.updateCategory(model,(error, results)=>{
                 if(error){
@@ -88,8 +92,7 @@ exports.update = (req, res, next)=>{
     })
 }
 
-exports.delete = (req, res, next)=>{
-        
+exports.delete = (req, res, next)=>{        
     var model = {
         categoryId:req.prams.id,
     }
