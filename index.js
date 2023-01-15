@@ -5,41 +5,31 @@ const { MONGO_DB_CONFIG } = require("./config/app.config");
 const errors = require("./middleware/errors.js");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
-
-// connect to mongodb
-
-/**
- * With useNewUrlParser: The underlying MongoDB driver has deprecated their current connection string parser.
- * Because this is a major change, they added the useNewUrlParser flag to allow users to fall back to the old parser if they find a bug in the new parser.
- * You should set useNewUrlParser: true unless that prevents you from connecting.
- *
- * With useUnifiedTopology, the MongoDB driver sends a heartbeat every heartbeatFrequencyMS to check on the status of the connection.
- * A heartbeat is subject to serverSelectionTimeoutMS , so the MongoDB driver will retry failed heartbeats for up to 30 seconds by default.
- */
-
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+app.all('*', function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By", ' 3.2.1');
+  res.header("Content-Type", "application/json;charset=utf-8");
+  if (req.method == 'OPTIONS') res.sendStatus(200); else next();
+})
+mongoose.set("strictQuery", false);
 mongoose.Promise = global.Promise;
 mongoose
-  .connect(MONGO_DB_CONFIG.DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  .connect(MONGO_DB_CONFIG.DB)
+  .then(() => {
+    console.log('Connection Successful');
   })
-  .then(
-    () => {
-      console.log("Database connected");
-    },
-    (error) => {
-      console.log("Database can't be connected: " + error);
-    }
-  );
+  .catch((err) => {
+    console.log(err.message);
+  });
 
 app.use(express.json());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/uploads", express.static("uploads"));
-
-app.use("/",(req, res)=>{
-    res.status(200).json({message:"You are welcome!"});
-})
 
 // initialize routes
 app.use("/api", require("./routes/app.routes"));

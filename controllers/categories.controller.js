@@ -6,11 +6,11 @@ exports.create = (req, res, next)=>{
         if(err){
             next(err);
         }else{
-            const path = req.file != undefined?req.file.path.replace(/\\/g,"/"):"";
+            const path = req.file != undefined ? req.file.path.replace(/\\/g,"/"):"";
             var model = {
                 categoryName:req.body.categoryName,
                 categoryDescription:req.body.categoryDescription,
-                categoryName:path!=""?"/"+path:"",
+                categoryImage:path !="" ? "/"+path:"",
             }
             categoriesService.createCategory(model,(error, results)=>{
                 if(error){
@@ -27,7 +27,6 @@ exports.create = (req, res, next)=>{
 }
 
 exports.findAll= (req, res, next)=>{
-        
     var model = {
         categoryName:req.query.categoryName,
         pageSize:req.query.pageSize,

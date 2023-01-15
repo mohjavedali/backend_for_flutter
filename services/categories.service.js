@@ -1,4 +1,3 @@
-const { response } = require("express");
 const { MONGO_DB_CONFIG } = require("../config/app.config");
 const {category} = require("../models/category.model");
 
@@ -17,12 +16,13 @@ async function createCategory(params, callback){
 }
 async function getCategories(params, callback){
     const categoryName = params.categoryName;
-    var condition = categoryName?{
+    var condition = categoryName ?
+    {
         categoryName:{$regex:new RegExp(categoryName), $options:"i"},
-    }
-    :{};
-    let perPage = Math.abs(params.pageSize)||MONGO_DB_CONFIG.PAGE_SIZE;
-    let page = (MATH.abs(params.page) || 1)-1;
+    }:
+    {};
+    let perPage = Math.abs(params.pageSize)|| MONGO_DB_CONFIG.PAGE_SIZE;
+    let page = (Math.abs(params.page) || 1) - 1;
     category.find(condition, "categoryName categoryImage")
     .limit(perPage)
     .skip(perPage*page)
@@ -68,3 +68,11 @@ async function deleteCategory(params, callback){
         return callback(error);
     })
 } 
+
+module.exports = {
+    getCategories,
+    deleteCategory,
+    updateCategory,
+    getCategoryById,
+    createCategory
+}
